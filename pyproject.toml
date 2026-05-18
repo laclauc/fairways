@@ -14,7 +14,6 @@ classifiers = [
     "Development Status :: 1 - Planning",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -26,5 +25,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ton-user/fairways"
-Repository = "https://github.com/ton-user/fairways"
+Homepage = "https://github.com/laclauc/fairways"
+Repository = "https://github.com/laclauc/fairways"
