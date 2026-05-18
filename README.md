@@ -1,4 +1,4 @@
-# fairways
+# equiml
 
 **Fairness auditing and mitigation for machine learning.**
 
@@ -7,7 +7,7 @@
 ## Installation
 
 ```bash
-pip install fairways
+pip install equiml
 ```
 
 ## License

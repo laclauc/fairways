@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fairways"
+name = "equiml"
 version = "0.0.1"
 description = "Fairness auditing and mitigation for machine learning"
 readme = "README.md"
@@ -25,5 +25,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/laclauc/fairways"
-Repository = "https://github.com/laclauc/fairways"
+Homepage = "https://github.com/laclauc/equiml"
+Repository = "https://github.com/laclauc/equiml"
