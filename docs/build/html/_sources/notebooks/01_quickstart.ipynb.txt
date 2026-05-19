@@ -1,0 +1,437 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# equiml — Quickstart\n",
+    "\n",
+    "This notebook introduces `equiml` through two synthetic scenarios:\n",
+    "\n",
+    "1. **Discrete predictions** — binary labels, hiring model\n",
+    "2. **Continuous predictions** — probability scores, same setting\n",
+    "\n",
+    "We will show how to detect bias, read results, and use custom metrics."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "from equiml import audit\n",
+    "from equiml.metrics import (\n",
+    "    DemographicParity,\n",
+    "    EqualizedOdds,\n",
+    "    AUCParity,\n",
+    "    FairnessMetric,\n",
+    ")\n",
+    "from equiml.metrics.base import MetricResult"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. Synthetic data\n",
+    "\n",
+    "We simulate a hiring model with a **controlled bias**: candidates from group 1 are systematically less likely to be hired, even when equally qualified."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Dataset size: 1000 candidates\n",
+      "Group A size: 490 | Group B size: 510\n",
+      "Overall positive rate (labels): 0.48\n",
+      "Group A positive rate: 0.57\n",
+      "Group B positive rate: 0.39\n"
+     ]
+    }
+   ],
+   "source": [
+    "np.random.seed(42)\n",
+    "n = 1000\n",
+    "\n",
+    "# Sensitive attribute: 0 = group A, 1 = group B\n",
+    "sensitive = np.random.randint(0, 2, size=n)\n",
+    "\n",
+    "# Ground truth: both groups are equally qualified\n",
+    "y_true = np.random.randint(0, 2, size=n)\n",
+    "\n",
+    "# Biased model: group B is hired less often\n",
+    "# AND some false positives exist for both groups\n",
+    "noise = np.random.random(size=n)\n",
+    "y_pred_labels = y_true.copy()\n",
+    "\n",
+    "# False negatives — group B misses true positives\n",
+    "flip_fn = (sensitive == 1) & (y_true == 1) & (noise < 0.4)\n",
+    "y_pred_labels[flip_fn] = 0\n",
+    "\n",
+    "# False positives — some negatives predicted positive for both groups\n",
+    "flip_fp = (y_true == 0) & (noise < 0.15)\n",
+    "y_pred_labels[flip_fp] = 1\n",
+    "\n",
+    "# Probas\n",
+    "y_pred_proba = np.where(\n",
+    "    sensitive == 0,\n",
+    "    np.clip(y_true * 0.7 + np.random.normal(0, 0.15, n), 0, 1),\n",
+    "    np.clip(y_true * 0.4 + np.random.normal(0, 0.15, n), 0, 1),\n",
+    ")\n",
+    "\n",
+    "print(f\"Dataset size: {n} candidates\")\n",
+    "print(f\"Group A size: {(sensitive == 0).sum()} | Group B size: {(sensitive == 1).sum()}\")\n",
+    "print(f\"Overall positive rate (labels): {y_pred_labels.mean():.2f}\")\n",
+    "print(f\"Group A positive rate: {y_pred_labels[sensitive == 0].mean():.2f}\")\n",
+    "print(f\"Group B positive rate: {y_pred_labels[sensitive == 1].mean():.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Discrete audit\n",
+    "\n",
+    "We pass binary labels to `audit()`. It automatically detects the prediction type and computes all compatible metrics."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "AuditResult(pred_type='labels', groups=[np.int64(0), np.int64(1)])\n",
+      "Metrics:\n",
+      "  demographic_parity: 0.1732\n",
+      "  equal_opportunity: 0.3251\n",
+      "  equalized_odds: 0.3251\n",
+      "  predictive_parity: 0.0150\n"
+     ]
+    }
+   ],
+   "source": [
+    "result = audit(y_true, y_pred_labels, sensitive, metrics=\"all\")\n",
+    "print(result)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Demographic Parity gap : 0.1732\n",
+      "Group A positive rate  : 0.5673\n",
+      "Group B positive rate  : 0.3941\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Inspect a specific metric\n",
+    "dp = result.metrics[\"demographic_parity\"]\n",
+    "\n",
+    "print(f\"Demographic Parity gap : {dp.value:.4f}\")\n",
+    "print(f\"Group A positive rate  : {dp.groups[0]:.4f}\")\n",
+    "print(f\"Group B positive rate  : {dp.groups[1]:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Equalized Odds gap : 0.3251\n",
+      "TPR gap            : 0.3251\n",
+      "FPR gap            : 0.0429\n",
+      "TPR group A        : 1.0000\n",
+      "TPR group B        : 0.6749\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Equalized Odds — TPR and FPR gaps\n",
+    "eo = result.metrics[\"equalized_odds\"]\n",
+    "\n",
+    "print(f\"Equalized Odds gap : {eo.value:.4f}\")\n",
+    "print(f\"TPR gap            : {eo.extra['tpr_gap']:.4f}\")\n",
+    "print(f\"FPR gap            : {eo.extra['fpr_gap']:.4f}\")\n",
+    "print(f\"TPR group A        : {eo.extra['tprs'][0]:.4f}\")\n",
+    "print(f\"TPR group B        : {eo.extra['tprs'][1]:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Selecting specific metrics"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "AuditResult(pred_type='labels', groups=[np.int64(0), np.int64(1)])\n",
+      "Metrics:\n",
+      "  demographic_parity: 0.1732\n",
+      "  equal_opportunity: 0.3251\n"
+     ]
+    }
+   ],
+   "source": [
+    "# By name\n",
+    "result_partial = audit(\n",
+    "    y_true, y_pred_labels, sensitive,\n",
+    "    metrics=[\"demographic_parity\", \"equal_opportunity\"]\n",
+    ")\n",
+    "print(result_partial)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 4. Continuous audit\n",
+    "\n",
+    "We now pass probability scores. `equiml` detects the type automatically and switches to proba-compatible metrics."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "AuditResult(pred_type='proba', groups=[np.int64(0), np.int64(1)])\n",
+      "Metrics:\n",
+      "  auc_parity: 0.0311\n",
+      "  calibration_parity: 0.0857\n",
+      "  brier_parity: 0.1278\n"
+     ]
+    }
+   ],
+   "source": [
+    "result_proba = audit(y_true, y_pred_proba, sensitive, metrics=\"all\")\n",
+    "print(result_proba)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "AUC Parity gap : 0.0311\n",
+      "AUC group A    : 0.9994\n",
+      "AUC group B    : 0.9683\n"
+     ]
+    }
+   ],
+   "source": [
+    "# AUC Parity — per-group AUC scores\n",
+    "auc = result_proba.metrics[\"auc_parity\"]\n",
+    "\n",
+    "print(f\"AUC Parity gap : {auc.value:.4f}\")\n",
+    "print(f\"AUC group A    : {auc.groups[0]:.4f}\")\n",
+    "print(f\"AUC group B    : {auc.groups[1]:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Calibration Parity gap : 0.0857\n",
+      "ECE group A            : 0.1676\n",
+      "ECE group B            : 0.2533\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Calibration Parity — ECE per group\n",
+    "cal = result_proba.metrics[\"calibration_parity\"]\n",
+    "\n",
+    "print(f\"Calibration Parity gap : {cal.value:.4f}\")\n",
+    "print(f\"ECE group A            : {cal.groups[0]:.4f}\")\n",
+    "print(f\"ECE group B            : {cal.groups[1]:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 5. Custom metric\n",
+    "\n",
+    "Any metric can be implemented by subclassing `FairnessMetric`. Here we implement a simple **Positive Rate Ratio** (also known as disparate impact ratio)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Disparate Impact ratio   : 0.6947\n",
+      "Passes 4/5 rule (>= 0.8) : False\n"
+     ]
+    }
+   ],
+   "source": [
+    "class DisparateImpact(FairnessMetric):\n",
+    "    \"\"\"\n",
+    "    Disparate Impact Ratio.\n",
+    "\n",
+    "    ratio = min(P(Ŷ=1|S=g)) / max(P(Ŷ=1|S=g))\n",
+    "\n",
+    "    A ratio of 1.0 indicates no disparate impact.\n",
+    "    The 4/5 rule (US EEOC) flags ratios below 0.8.\n",
+    "    \"\"\"\n",
+    "\n",
+    "    @property\n",
+    "    def requires(self) -> set[str]:\n",
+    "        return {\"labels\"}\n",
+    "\n",
+    "    @property\n",
+    "    def name(self) -> str:\n",
+    "        return \"disparate_impact\"\n",
+    "\n",
+    "    def compute(self, y_true, y_pred, sensitive, **kwargs) -> MetricResult:\n",
+    "        groups = np.unique(sensitive)\n",
+    "        rates = {g: y_pred[sensitive == g].mean() for g in groups}\n",
+    "        values = list(rates.values())\n",
+    "        ratio = min(values) / max(values) if max(values) > 0 else 0.0\n",
+    "        return MetricResult(\n",
+    "            name=self.name,\n",
+    "            value=ratio,\n",
+    "            groups=rates,\n",
+    "            extra={\"passes_four_fifths_rule\": ratio >= 0.8},\n",
+    "        )\n",
+    "\n",
+    "\n",
+    "result_custom = audit(\n",
+    "    y_true, y_pred_labels, sensitive,\n",
+    "    metrics=[\"demographic_parity\", DisparateImpact()]\n",
+    ")\n",
+    "\n",
+    "di = result_custom.metrics[\"disparate_impact\"]\n",
+    "print(f\"Disparate Impact ratio   : {di.value:.4f}\")\n",
+    "print(f\"Passes 4/5 rule (>= 0.8) : {di.extra['passes_four_fifths_rule']}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 6. Intersectional analysis\n",
+    "\n",
+    "Pass a list of arrays to analyze fairness across **combinations** of sensitive attributes."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Intersectional groups: [np.str_('0_0'), np.str_('0_1'), np.str_('0_2'), np.str_('1_0'), np.str_('1_1'), np.str_('1_2')]\n",
+      "\n",
+      "Positive rates per group:\n",
+      "  gender=0, age=0 → 0.4479\n",
+      "  gender=0, age=1 → 0.5440\n",
+      "  gender=0, age=2 → 0.5067\n",
+      "  gender=1, age=0 → 0.4524\n",
+      "  gender=1, age=1 → 0.4085\n",
+      "  gender=1, age=2 → 0.5087\n",
+      "\n",
+      "Max gap: 0.1354\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Two sensitive attributes: gender and age group\n",
+    "gender   = np.random.randint(0, 2, size=n)\n",
+    "age      = np.random.randint(0, 3, size=n)  # 3 age groups\n",
+    "\n",
+    "result_intersect = audit(\n",
+    "    y_true, y_pred_labels,\n",
+    "    sensitive=[gender, age],\n",
+    "    metrics=[\"demographic_parity\"]\n",
+    ")\n",
+    "\n",
+    "dp_intersect = result_intersect.metrics[\"demographic_parity\"]\n",
+    "print(f\"Intersectional groups: {result_intersect.groups}\")\n",
+    "print(f\"\\nPositive rates per group:\")\n",
+    "for group, rate in dp_intersect.groups.items():\n",
+    "    print(f\"  gender={group.split('_')[0]}, age={group.split('_')[1]} → {rate:.4f}\")\n",
+    "print(f\"\\nMax gap: {dp_intersect.value:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "equiml (.venv)",
+   "language": "python",
+   "name": "equiml-venv"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Concepts &mdash; equiml 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="audit" href="api/audit.html" />
+    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            equiml
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-fairness-in-machine-learning">What is fairness in machine learning?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensitive-attributes">Sensitive attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fairness-metrics">Fairness metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#demographic-parity">Demographic Parity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equal-opportunity">Equal Opportunity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equalized-odds">Equalized Odds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#predictive-parity">Predictive Parity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auc-parity">AUC Parity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calibration-parity">Calibration Parity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#brier-score-parity">Brier Score Parity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-impossibility-theorem">The impossibility theorem</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/audit.html">audit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/result.html">result</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/01_quickstart.html">equiml — Quickstart</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">equiml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Concepts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/concepts.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="concepts">
+<h1>Concepts<a class="headerlink" href="#concepts" title="Link to this heading"></a></h1>
+<section id="what-is-fairness-in-machine-learning">
+<h2>What is fairness in machine learning?<a class="headerlink" href="#what-is-fairness-in-machine-learning" title="Link to this heading"></a></h2>
+<p>A model is considered <strong>biased</strong> when its predictions systematically
+disadvantage certain groups defined by sensitive attributes such as
+gender, age, or ethnicity.</p>
+<p>equiml provides tools to <strong>measure</strong> and <strong>mitigate</strong> this bias.</p>
+</section>
+<section id="sensitive-attributes">
+<h2>Sensitive attributes<a class="headerlink" href="#sensitive-attributes" title="Link to this heading"></a></h2>
+<p>A sensitive attribute is a feature that defines groups across which
+fairness should be evaluated. Examples include gender, age group,
+or ethnicity.</p>
+<p>equiml accepts sensitive attributes as NumPy arrays:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sensitive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># 0 = group A, 1 = group B</span>
+</pre></div>
+</div>
+<p>For intersectional analysis, pass a list of arrays:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sensitive</span> <span class="o">=</span> <span class="p">[</span><span class="n">gender_array</span><span class="p">,</span> <span class="n">age_array</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="fairness-metrics">
+<h2>Fairness metrics<a class="headerlink" href="#fairness-metrics" title="Link to this heading"></a></h2>
+<p>equiml implements two families of metrics.</p>
+<p><strong>Metrics on discrete predictions (labels)</strong></p>
+<section id="demographic-parity">
+<h3>Demographic Parity<a class="headerlink" href="#demographic-parity" title="Link to this heading"></a></h3>
+<p>Measures the gap in positive prediction rates between groups.</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{DP} = P(\hat{Y}=1 | S=a) - P(\hat{Y}=1 | S=b)\]</div>
+<p>A value of 0 indicates perfect demographic parity.</p>
+</section>
+<section id="equal-opportunity">
+<h3>Equal Opportunity<a class="headerlink" href="#equal-opportunity" title="Link to this heading"></a></h3>
+<p>Measures the gap in True Positive Rates (TPR) between groups.</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{EO} = TPR(S=a) - TPR(S=b)\]</div>
+</section>
+<section id="equalized-odds">
+<h3>Equalized Odds<a class="headerlink" href="#equalized-odds" title="Link to this heading"></a></h3>
+<p>Measures both TPR and FPR gaps between groups.</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{EOdds} = \max(\Delta_{TPR}, \Delta_{FPR})\]</div>
+</section>
+<section id="predictive-parity">
+<h3>Predictive Parity<a class="headerlink" href="#predictive-parity" title="Link to this heading"></a></h3>
+<p>Measures the gap in precision between groups.</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{PP} = Precision(S=a) - Precision(S=b)\]</div>
+<p><strong>Metrics on probability scores</strong></p>
+</section>
+<section id="auc-parity">
+<h3>AUC Parity<a class="headerlink" href="#auc-parity" title="Link to this heading"></a></h3>
+<p>Measures the gap in ROC AUC scores between groups.</p>
+</section>
+<section id="calibration-parity">
+<h3>Calibration Parity<a class="headerlink" href="#calibration-parity" title="Link to this heading"></a></h3>
+<p>Measures the gap in Expected Calibration Error (ECE) between groups.</p>
+</section>
+<section id="brier-score-parity">
+<h3>Brier Score Parity<a class="headerlink" href="#brier-score-parity" title="Link to this heading"></a></h3>
+<p>Measures the gap in mean squared error between predicted probabilities
+and true labels across groups.</p>
+</section>
+</section>
+<section id="the-impossibility-theorem">
+<h2>The impossibility theorem<a class="headerlink" href="#the-impossibility-theorem" title="Link to this heading"></a></h2>
+<p>It is mathematically impossible to satisfy all fairness metrics
+simultaneously when base rates differ across groups (Chouldechova 2017,
+Kleinberg et al. 2016).</p>
+<p>This means that <strong>the choice of metric matters</strong> — different metrics
+can lead to different conclusions about whether a model is fair.</p>
+<p>equiml lets you compute all metrics at once so you can make an
+informed decision.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/audit.html" class="btn btn-neutral float-right" title="audit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Charlotte Laclau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
