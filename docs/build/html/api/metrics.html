@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>metrics &mdash; equiml 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="result" href="result.html" />
+    <link rel="prev" title="audit" href="audit.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            equiml
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts.html">Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="audit.html">audit</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">metrics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#base-class">Base class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.FairnessMetric"><code class="docutils literal notranslate"><span class="pre">FairnessMetric</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.base.MetricResult"><code class="docutils literal notranslate"><span class="pre">MetricResult</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discrete-metrics">Discrete metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.DemographicParity"><code class="docutils literal notranslate"><span class="pre">DemographicParity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.EqualOpportunity"><code class="docutils literal notranslate"><span class="pre">EqualOpportunity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.EqualizedOdds"><code class="docutils literal notranslate"><span class="pre">EqualizedOdds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.PredictiveParity"><code class="docutils literal notranslate"><span class="pre">PredictiveParity</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#continuous-metrics">Continuous metrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.AUCParity"><code class="docutils literal notranslate"><span class="pre">AUCParity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.CalibrationParity"><code class="docutils literal notranslate"><span class="pre">CalibrationParity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.metrics.BrierParity"><code class="docutils literal notranslate"><span class="pre">BrierParity</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="result.html">result</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01_quickstart.html">equiml — Quickstart</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">equiml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">metrics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/metrics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="metrics">
+<h1>metrics<a class="headerlink" href="#metrics" title="Link to this heading"></a></h1>
+<section id="base-class">
+<h2>Base class<a class="headerlink" href="#base-class" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.FairnessMetric">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">FairnessMetric</span></span><a class="reference internal" href="../_modules/equiml/metrics/base.html#FairnessMetric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.FairnessMetric" title="Link to this definition"></a></dt>
+<dd><p>Base class for all fairness metrics.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.FairnessMetric.compute">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/base.html#FairnessMetric.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.FairnessMetric.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.FairnessMetric.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.FairnessMetric.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.FairnessMetric.requires">
+<span class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.FairnessMetric.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.base.</span></span><span class="sig-name descname"><span class="pre">MetricResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/base.html#MetricResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.base.MetricResult" title="Link to this definition"></a></dt>
+<dd><p>Result of a fairness metric computation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.name" title="Link to this definition"></a></dt>
+<dd><p>Name of the metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.value" title="Link to this definition"></a></dt>
+<dd><p>Main scalar value of the metric (e.g. gap between groups).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.groups" title="Link to this definition"></a></dt>
+<dd><p>Per-group breakdown of the metric value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.confidence_interval">
+<span class="sig-name descname"><span class="pre">confidence_interval</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.confidence_interval" title="Link to this definition"></a></dt>
+<dd><p>(lower, upper) confidence interval for the metric value, if computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.p_value">
+<span class="sig-name descname"><span class="pre">p_value</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.p_value" title="Link to this definition"></a></dt>
+<dd><p>p-value from statistical test, if computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.curve">
+<span class="sig-name descname"><span class="pre">curve</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.curve" title="Link to this definition"></a></dt>
+<dd><p>Curve data (e.g. ROC curve, calibration curve), if applicable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.metrics.base.MetricResult.extra">
+<span class="sig-name descname"><span class="pre">extra</span></span><a class="headerlink" href="#equiml.metrics.base.MetricResult.extra" title="Link to this definition"></a></dt>
+<dd><p>Any additional metric-specific information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="discrete-metrics">
+<h2>Discrete metrics<a class="headerlink" href="#discrete-metrics" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.DemographicParity">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">DemographicParity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#DemographicParity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.DemographicParity" title="Link to this definition"></a></dt>
+<dd><p>Demographic Parity (Statistical Parity).</p>
+<p>Measures the difference in positive prediction rates between groups.
+A value of 0 indicates perfect demographic parity.
+First introduced in <a class="reference internal" href="#dp1" id="id1"><span>[DP1]</span></a> and further studied in <a class="reference internal" href="#dp2" id="id2"><span>[DP2]</span></a>.</p>
+<p>For 2 groups:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{DP} = P(\hat{Y}=1 | S=a) - P(\hat{Y}=1 | S=b)\]</div>
+<p>For more than 2 groups, value is the max gap across all group pairs.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="dp1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">DP1</a><span class="fn-bracket">]</span></span>
+<p>Dwork, C., Hardt, M., Pitassi, T., Reingold, O., &amp; Zemel, R.
+(2012). Fairness through awareness. In Proceedings of the 3rd
+Innovations in Theoretical Computer Science Conference (pp. 214-226).
+<a class="reference external" href="https://doi.org/10.1145/2090236.2090255">https://doi.org/10.1145/2090236.2090255</a></p>
+</div>
+<div class="citation" id="dp2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">DP2</a><span class="fn-bracket">]</span></span>
+<p>Calders, T., &amp; Verwer, S. (2010). Three naive Bayes approaches
+for discrimination-free classification. Data Mining and Knowledge
+Discovery, 21(2), 277-292.
+<a class="reference external" href="https://doi.org/10.1007/s10618-010-0190-x">https://doi.org/10.1007/s10618-010-0190-x</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.DemographicParity.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#DemographicParity.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.DemographicParity.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.DemographicParity.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.DemographicParity.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.DemographicParity.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.DemographicParity.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.EqualOpportunity">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">EqualOpportunity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#EqualOpportunity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.EqualOpportunity" title="Link to this definition"></a></dt>
+<dd><p>Equal Opportunity.</p>
+<p>Measures the difference in True Positive Rates (TPR) between groups.
+A value of 0 indicates equal opportunity.
+Introduced in <a class="reference internal" href="#eo1" id="id3"><span>[EO1]</span></a>.</p>
+<p>For 2 groups:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{EO} = TPR(S=a) - TPR(S=b)\]</div>
+<p>For more than 2 groups, value is the max TPR gap across all group pairs.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="eo1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">EO1</a><span class="fn-bracket">]</span></span>
+<p>Hardt, M., Price, E., &amp; Srebro, N. (2016). Equality of opportunity
+in supervised learning. Advances in Neural Information Processing
+Systems, 29, 3315-3323.
+<a class="reference external" href="https://arxiv.org/abs/1610.02413">https://arxiv.org/abs/1610.02413</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.EqualOpportunity.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#EqualOpportunity.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.EqualOpportunity.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.EqualOpportunity.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.EqualOpportunity.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.EqualOpportunity.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.EqualOpportunity.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.EqualizedOdds">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">EqualizedOdds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#EqualizedOdds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.EqualizedOdds" title="Link to this definition"></a></dt>
+<dd><p>Equalized Odds.</p>
+<p>Measures differences in both TPR and FPR between groups.
+Returns the max of TPR gap and FPR gap.
+Introduced in <a class="reference internal" href="#eodds1" id="id4"><span>[EOdds1]</span></a>.</p>
+<p>A value of 0 indicates equalized odds.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="eodds1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">EOdds1</a><span class="fn-bracket">]</span></span>
+<p>Hardt, M., Price, E., &amp; Srebro, N. (2016). Equality of
+opportunity in supervised learning. Advances in Neural
+Information Processing Systems, 29, 3315-3323.
+<a class="reference external" href="https://arxiv.org/abs/1610.02413">https://arxiv.org/abs/1610.02413</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.EqualizedOdds.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#EqualizedOdds.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.EqualizedOdds.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.EqualizedOdds.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.EqualizedOdds.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.EqualizedOdds.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.EqualizedOdds.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.PredictiveParity">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">PredictiveParity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#PredictiveParity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.PredictiveParity" title="Link to this definition"></a></dt>
+<dd><p>Predictive Parity.</p>
+<p>Measures the difference in precision between groups.
+A value of 0 indicates predictive parity.
+Studied in <a class="reference internal" href="#pp1" id="id5"><span>[PP1]</span></a> in the context of recidivism prediction.</p>
+<p>For 2 groups:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{PP} = Precision(S=a) - Precision(S=b)\]</div>
+<p>For more than 2 groups, value is the max precision gap.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="pp1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">PP1</a><span class="fn-bracket">]</span></span>
+<p>Chouldechova, A. (2017). Fair prediction with disparate impact:
+A study of bias in recidivism prediction instruments. Big Data,
+5(2), 153-163.
+<a class="reference external" href="https://doi.org/10.1089/big.2016.0047">https://doi.org/10.1089/big.2016.0047</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.PredictiveParity.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/discrete.html#PredictiveParity.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.PredictiveParity.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.PredictiveParity.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.PredictiveParity.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.PredictiveParity.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.PredictiveParity.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="continuous-metrics">
+<h2>Continuous metrics<a class="headerlink" href="#continuous-metrics" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.AUCParity">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">AUCParity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/continuous.html#AUCParity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.AUCParity" title="Link to this definition"></a></dt>
+<dd><p>AUC Parity.</p>
+<p>Measures the difference in ROC AUC scores between groups.
+A value of 0 indicates perfect AUC parity.
+Based on the framework of <a class="reference internal" href="#auc1" id="id6"><span>[AUC1]</span></a>, with fairness extensions from <a class="reference internal" href="#auc2" id="id7"><span>[AUC2]</span></a>.</p>
+<p>For 2 groups:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{AUC} = AUC(S=a) - AUC(S=b)\]</div>
+<p>For more than 2 groups, value is the max AUC gap across all group pairs.
+Per-group ROC curves are available in <code class="docutils literal notranslate"><span class="pre">extra['roc_curves']</span></code>.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="auc1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">AUC1</a><span class="fn-bracket">]</span></span>
+<p>Hand, D.J. (2009). Measuring classifier performance: a coherent
+alternative to the area under the ROC curve. Machine Learning,
+77(1), 103-123.
+<a class="reference external" href="https://doi.org/10.1007/s10994-009-5119-5">https://doi.org/10.1007/s10994-009-5119-5</a></p>
+</div>
+<div class="citation" id="auc2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">AUC2</a><span class="fn-bracket">]</span></span>
+<p>Borkan, D., Dixon, L., Sorensen, J., Thain, N., &amp; Vasserman, L.
+(2019). Nuanced metrics for measuring unintended bias with real
+data for text classification. In Companion Proceedings of the
+World Wide Web Conference (pp. 491-500).
+<a class="reference external" href="https://doi.org/10.1145/3308560.3317593">https://doi.org/10.1145/3308560.3317593</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.AUCParity.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/continuous.html#AUCParity.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.AUCParity.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.AUCParity.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.AUCParity.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.AUCParity.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.AUCParity.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.CalibrationParity">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">CalibrationParity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/continuous.html#CalibrationParity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.CalibrationParity" title="Link to this definition"></a></dt>
+<dd><p>Calibration Parity.</p>
+<p>Measures whether predicted probabilities are equally well calibrated
+across groups, via the Expected Calibration Error (ECE) per group.
+Based on the ECE metric from <a class="reference internal" href="#cal2" id="id8"><span>[CAL2]</span></a>, with fairness analysis from <a class="reference internal" href="#cal1" id="id9"><span>[CAL1]</span></a>.</p>
+<p>A value of 0 indicates perfect calibration parity.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="cal1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">CAL1</a><span class="fn-bracket">]</span></span>
+<p>Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., &amp; Weinberger,
+K.Q. (2017). On fairness and calibration. Advances in Neural
+Information Processing Systems, 30.
+<a class="reference external" href="https://arxiv.org/abs/1709.02012">https://arxiv.org/abs/1709.02012</a></p>
+</div>
+<div class="citation" id="cal2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">CAL2</a><span class="fn-bracket">]</span></span>
+<p>Naeini, M.P., Cooper, G., &amp; Hauskrecht, M. (2015). Obtaining
+well calibrated probabilities using Bayesian binning into
+quantiles. In Proceedings of the AAAI Conference on Artificial
+Intelligence (Vol. 29, No. 1).</p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.CalibrationParity.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/continuous.html#CalibrationParity.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.CalibrationParity.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.CalibrationParity.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.CalibrationParity.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.CalibrationParity.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.CalibrationParity.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.metrics.BrierParity">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.metrics.</span></span><span class="sig-name descname"><span class="pre">BrierParity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistical_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/continuous.html#BrierParity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.BrierParity" title="Link to this definition"></a></dt>
+<dd><p>Brier Score Parity.</p>
+<p>Measures the difference in Brier scores between groups.
+The Brier score is the mean squared error between predicted
+probabilities and true labels.
+Based on the Brier score <a class="reference internal" href="#bs1" id="id10"><span>[BS1]</span></a>, with fairness analysis from <a class="reference internal" href="#bs2" id="id11"><span>[BS2]</span></a>.</p>
+<p>A value of 0 indicates perfect Brier score parity.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="bs1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">BS1</a><span class="fn-bracket">]</span></span>
+<p>Brier, G.W. (1950). Verification of forecasts expressed in terms
+of probability. Monthly Weather Review, 78(1), 1-3.
+<a class="reference external" href="https://doi.org/10.1175/1520-0493(1950">https://doi.org/10.1175/1520-0493(1950</a>)078&lt;0001:VOFEIT&gt;2.0.CO;2</p>
+</div>
+<div class="citation" id="bs2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id11">BS2</a><span class="fn-bracket">]</span></span>
+<p>Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., &amp; Weinberger,
+K.Q. (2017). On fairness and calibration. Advances in Neural
+Information Processing Systems, 30.
+<a class="reference external" href="https://arxiv.org/abs/1709.02012">https://arxiv.org/abs/1709.02012</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.metrics.BrierParity.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/metrics/continuous.html#BrierParity.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.metrics.BrierParity.compute" title="Link to this definition"></a></dt>
+<dd><p>Compute the fairness metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Predictions (discrete labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s). Pass a single np.ndarray for a single
+attribute, or a list of np.ndarray for intersectional analysis.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metric-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rich result object containing value, groups, CI, p-value, curve.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.metrics.base.MetricResult" title="equiml.metrics.base.MetricResult">MetricResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.BrierParity.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.metrics.BrierParity.name" title="Link to this definition"></a></dt>
+<dd><p>Metric name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.metrics.BrierParity.requires">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">requires</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#equiml.metrics.BrierParity.requires" title="Link to this definition"></a></dt>
+<dd><p>Return the set of prediction types required by this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Subset of {‘labels’, ‘proba’}.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)">set</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">requires</span>
+<span class="go">{&#39;labels&#39;, &#39;proba&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="audit.html" class="btn btn-neutral float-left" title="audit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="result.html" class="btn btn-neutral float-right" title="result" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Charlotte Laclau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
