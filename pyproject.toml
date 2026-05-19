@@ -41,3 +41,6 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/laclauc/equiml"
 Repository = "https://github.com/laclauc/equiml"
+
+[tool.setuptools.packages.find]
+include = ["equiml*"]
