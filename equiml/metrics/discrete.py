@@ -68,23 +68,27 @@ class DemographicParity(FairnessMetric):
 
     Measures the difference in positive prediction rates between groups.
     A value of 0 indicates perfect demographic parity.
+    First introduced in [DP1]_ and further studied in [DP2]_.
 
     For 2 groups:
-        value = P(Ŷ=1 | S=a) - P(Ŷ=1 | S=b)
+
+    .. math::
+
+        \\Delta_{DP} = P(\\hat{Y}=1 | S=a) - P(\\hat{Y}=1 | S=b)
 
     For more than 2 groups, value is the max gap across all group pairs.
 
     References
     ----------
-    .. [1] Dwork, C., Hardt, M., Pitassi, T., Reingold, O., & Zemel, R.
-           (2012). Fairness through awareness. In Proceedings of the 3rd
-           Innovations in Theoretical Computer Science Conference (pp. 214-226).
-           https://doi.org/10.1145/2090236.2090255
+    .. [DP1] Dwork, C., Hardt, M., Pitassi, T., Reingold, O., & Zemel, R.
+             (2012). Fairness through awareness. In Proceedings of the 3rd
+             Innovations in Theoretical Computer Science Conference (pp. 214-226).
+             https://doi.org/10.1145/2090236.2090255
 
-    .. [2] Calders, T., & Verwer, S. (2010). Three naive Bayes approaches
-           for discrimination-free classification. Data Mining and Knowledge
-           Discovery, 21(2), 277-292.
-           https://doi.org/10.1007/s10618-010-0190-x
+    .. [DP2] Calders, T., & Verwer, S. (2010). Three naive Bayes approaches
+             for discrimination-free classification. Data Mining and Knowledge
+             Discovery, 21(2), 277-292.
+             https://doi.org/10.1007/s10618-010-0190-x
     """
 
     def __init__(self, statistical_test: bool = False) -> None:
@@ -127,18 +131,22 @@ class EqualOpportunity(FairnessMetric):
 
     Measures the difference in True Positive Rates (TPR) between groups.
     A value of 0 indicates equal opportunity.
+    Introduced in [EO1]_.
 
     For 2 groups:
-        value = TPR(S=a) - TPR(S=b)
+
+    .. math::
+
+        \\Delta_{EO} = TPR(S=a) - TPR(S=b)
 
     For more than 2 groups, value is the max TPR gap across all group pairs.
 
     References
     ----------
-    .. [1] Hardt, M., Price, E., & Srebro, N. (2016). Equality of opportunity
-           in supervised learning. Advances in Neural Information Processing
-           Systems, 29, 3315-3323.
-           https://arxiv.org/abs/1610.02413
+    .. [EO1] Hardt, M., Price, E., & Srebro, N. (2016). Equality of opportunity
+             in supervised learning. Advances in Neural Information Processing
+             Systems, 29, 3315-3323.
+             https://arxiv.org/abs/1610.02413
     """
 
     def __init__(self, statistical_test: bool = False) -> None:
@@ -182,15 +190,16 @@ class EqualizedOdds(FairnessMetric):
 
     Measures differences in both TPR and FPR between groups.
     Returns the max of TPR gap and FPR gap.
+    Introduced in [EOdds1]_.
 
     A value of 0 indicates equalized odds.
 
     References
     ----------
-    .. [1] Hardt, M., Price, E., & Srebro, N. (2016). Equality of opportunity
-           in supervised learning. Advances in Neural Information Processing
-           Systems, 29, 3315-3323.
-           https://arxiv.org/abs/1610.02413
+    .. [EOdds1] Hardt, M., Price, E., & Srebro, N. (2016). Equality of
+                opportunity in supervised learning. Advances in Neural
+                Information Processing Systems, 29, 3315-3323.
+                https://arxiv.org/abs/1610.02413
     """
 
     def __init__(self, statistical_test: bool = False) -> None:
@@ -243,18 +252,22 @@ class PredictiveParity(FairnessMetric):
 
     Measures the difference in precision between groups.
     A value of 0 indicates predictive parity.
+    Studied in [PP1]_ in the context of recidivism prediction.
 
     For 2 groups:
-        value = Precision(S=a) - Precision(S=b)
+
+    .. math::
+
+        \\Delta_{PP} = Precision(S=a) - Precision(S=b)
 
     For more than 2 groups, value is the max precision gap.
 
     References
     ----------
-    .. [1] Chouldechova, A. (2017). Fair prediction with disparate impact:
-           A study of bias in recidivism prediction instruments. Big Data,
-           5(2), 153-163.
-           https://doi.org/10.1089/big.2016.0047
+    .. [PP1] Chouldechova, A. (2017). Fair prediction with disparate impact:
+             A study of bias in recidivism prediction instruments. Big Data,
+             5(2), 153-163.
+             https://doi.org/10.1089/big.2016.0047
     """
 
     def __init__(self, statistical_test: bool = False) -> None:

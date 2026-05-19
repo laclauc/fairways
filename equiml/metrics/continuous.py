@@ -62,26 +62,29 @@ class AUCParity(FairnessMetric):
 
     Measures the difference in ROC AUC scores between groups.
     A value of 0 indicates perfect AUC parity.
+    Based on the framework of [AUC1]_, with fairness extensions from [AUC2]_.
 
     For 2 groups:
-        value = AUC(S=a) - AUC(S=b)
+
+    .. math::
+
+        \\Delta_{AUC} = AUC(S=a) - AUC(S=b)
 
     For more than 2 groups, value is the max AUC gap across all group pairs.
-
-    The result also contains per-group ROC curves in `extra['roc_curves']`.
+    Per-group ROC curves are available in ``extra['roc_curves']``.
 
     References
     ----------
-    .. [1] Hand, D.J. (2009). Measuring classifier performance: a coherent
-           alternative to the area under the ROC curve. Machine Learning,
-           77(1), 103-123.
-           https://doi.org/10.1007/s10994-009-5119-5
+    .. [AUC1] Hand, D.J. (2009). Measuring classifier performance: a coherent
+              alternative to the area under the ROC curve. Machine Learning,
+              77(1), 103-123.
+              https://doi.org/10.1007/s10994-009-5119-5
 
-    .. [2] Borkan, D., Dixon, L., Sorensen, J., Thain, N., & Vasserman, L.
-           (2019). Nuanced metrics for measuring unintended bias with real
-           data for text classification. In Companion Proceedings of the
-           World Wide Web Conference (pp. 491-500).
-           https://doi.org/10.1145/3308560.3317593
+    .. [AUC2] Borkan, D., Dixon, L., Sorensen, J., Thain, N., & Vasserman, L.
+              (2019). Nuanced metrics for measuring unintended bias with real
+              data for text classification. In Companion Proceedings of the
+              World Wide Web Conference (pp. 491-500).
+              https://doi.org/10.1145/3308560.3317593
     """
 
     def __init__(self, statistical_test: bool = False) -> None:
@@ -110,7 +113,10 @@ class AUCParity(FairnessMetric):
         values = list(aucs.values())
         gap = max(values) - min(values)
 
-        roc_curves = {g: {"fpr": d["fpr"], "tpr": d["tpr"]} for g, d in roc_data.items()}
+        roc_curves = {
+            g: {"fpr": d["fpr"], "tpr": d["tpr"]}
+            for g, d in roc_data.items()
+        }
 
         return MetricResult(
             name=self.name,
@@ -128,24 +134,22 @@ class CalibrationParity(FairnessMetric):
     Calibration Parity.
 
     Measures whether predicted probabilities are equally well calibrated
-    across groups. Calibration is assessed via the Expected Calibration
-    Error (ECE) per group.
+    across groups, via the Expected Calibration Error (ECE) per group.
+    Based on the ECE metric from [CAL2]_, with fairness analysis from [CAL1]_.
 
     A value of 0 indicates perfect calibration parity.
 
-    value = max ECE gap across all group pairs.
-
     References
     ----------
-    .. [1] Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., & Weinberger,
-           K.Q. (2017). On fairness and calibration. Advances in Neural
-           Information Processing Systems, 30.
-           https://arxiv.org/abs/1709.02012
+    .. [CAL1] Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., & Weinberger,
+              K.Q. (2017). On fairness and calibration. Advances in Neural
+              Information Processing Systems, 30.
+              https://arxiv.org/abs/1709.02012
 
-    .. [2] Naeini, M.P., Cooper, G., & Hauskrecht, M. (2015). Obtaining
-           well calibrated probabilities using Bayesian binning into quantiles.
-           In Proceedings of the AAAI Conference on Artificial Intelligence
-           (Vol. 29, No. 1).
+    .. [CAL2] Naeini, M.P., Cooper, G., & Hauskrecht, M. (2015). Obtaining
+              well calibrated probabilities using Bayesian binning into
+              quantiles. In Proceedings of the AAAI Conference on Artificial
+              Intelligence (Vol. 29, No. 1).
     """
 
     def __init__(
@@ -212,25 +216,20 @@ class BrierParity(FairnessMetric):
     Measures the difference in Brier scores between groups.
     The Brier score is the mean squared error between predicted
     probabilities and true labels.
+    Based on the Brier score [BS1]_, with fairness analysis from [BS2]_.
 
     A value of 0 indicates perfect Brier score parity.
-    Lower Brier score = better calibrated model.
-
-    For 2 groups:
-        value = BrierScore(S=a) - BrierScore(S=b)
-
-    For more than 2 groups, value is the max Brier gap across all group pairs.
 
     References
     ----------
-    .. [1] Brier, G.W. (1950). Verification of forecasts expressed in terms
-           of probability. Monthly Weather Review, 78(1), 1-3.
-           https://doi.org/10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2
+    .. [BS1] Brier, G.W. (1950). Verification of forecasts expressed in terms
+             of probability. Monthly Weather Review, 78(1), 1-3.
+             https://doi.org/10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2
 
-    .. [2] Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., & Weinberger,
-           K.Q. (2017). On fairness and calibration. Advances in Neural
-           Information Processing Systems, 30.
-           https://arxiv.org/abs/1709.02012
+    .. [BS2] Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., & Weinberger,
+             K.Q. (2017). On fairness and calibration. Advances in Neural
+             Information Processing Systems, 30.
+             https://arxiv.org/abs/1709.02012
     """
 
     def __init__(self, statistical_test: bool = False) -> None:
