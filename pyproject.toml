@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "equiml"
-version = "0.0.1"
+version = "0.1.0"
 description = "Fairness auditing and mitigation for machine learning"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 keywords = ["fairness", "machine learning", "bias", "audit", "mitigation"]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
@@ -51,6 +51,7 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/laclauc/equiml"
 Repository = "https://github.com/laclauc/equiml"
+Documentation = "https://laclauc.github.io/equiml/"
 
 [tool.setuptools.packages.find]
 include = ["equiml*"]
