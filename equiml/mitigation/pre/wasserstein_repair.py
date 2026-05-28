@@ -126,6 +126,8 @@ class WassersteinRepair(PreProcessor):
         repair_type: str = "geometric",
         lambda_: float = 1.0,
         method: str = "quantile",
+        weights: tuple[float, float] = (0.5, 0.5),
+        random_state: int | None = None,
     ) -> None:
         if repair_type not in {"total", "geometric", "random"}:
             raise ValueError(
@@ -160,6 +162,8 @@ class WassersteinRepair(PreProcessor):
         self.repair_type = repair_type
         self.lambda_ = lambda_
         self.method = method
+        self.weights = weights
+        self.random_state = random_state
         self._groups: list = []
         self._fitted: bool = False
 
@@ -264,10 +268,21 @@ class WassersteinRepair(PreProcessor):
                 X_repaired = X_repaired.ravel()
 
         elif self.method == "ot":
-            raise NotImplementedError(
-                "method='ot' is not yet implemented. "
-                "Use method='quantile' for now."
+            from .wasserstein_repair_ot import _random_repair_ot
+            X_input = X_repaired if X.ndim > 1 else X_repaired.reshape(-1, 1)
+            X0_rep, X1_rep = _random_repair_ot(
+                X_input[mask0],
+                X_input[mask1],
+                lambda_=self.lambda_,
+                pi0=self.weights[0],
+                pi1=self.weights[1],
+                random_state=self.random_state,
             )
+            X_repaired = X_input.copy().astype(float)
+            X_repaired[mask0] = X0_rep
+            X_repaired[mask1] = X1_rep
+            if X.ndim == 1:
+                X_repaired = X_repaired.ravel()
 
         return PreProcessingResult(
             X=X_repaired,

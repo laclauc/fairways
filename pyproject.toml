@@ -31,6 +31,9 @@ stats = [
 viz = [
     "matplotlib>=3.7",
 ]
+ot = [
+    "POT>=0.9",
+]
 docs = [
     "sphinx",
     "sphinx-rtd-theme",
@@ -42,6 +45,7 @@ dev = [
     "pytest-cov",
     "scipy>=1.10",
     "matplotlib>=3.7",
+    "POT>=0.9",
     "sphinx",
     "sphinx-rtd-theme",
     "sphinx-autodoc-typehints",

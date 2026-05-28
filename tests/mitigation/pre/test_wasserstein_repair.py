@@ -246,17 +246,85 @@ class TestWassersteinRepair1D:
 # OT method
 # ---------------------------------------------------------------------------
 
+pot = pytest.importorskip("ot", reason="POT not installed — skipping OT tests")
+
+
 class TestWassersteinRepairOT:
 
-    def test_ot_not_implemented(self, simple_data):
+    def test_returns_preprocessing_result(self, simple_data):
         X, y, sensitive = simple_data
-        try:
-            rw = WassersteinRepair(method="ot")
-            rw.fit(X, y, sensitive)
-            with pytest.raises(NotImplementedError):
-                rw.transform(X, y, sensitive)
-        except ImportError:
-            pytest.skip("POT not installed")
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        assert isinstance(result, PreProcessingResult)
+
+    def test_shape_preserved(self, simple_data):
+        """Random Repair preserves dataset size."""
+        X, y, sensitive = simple_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        assert result.X.shape == X.shape
+
+    def test_y_unchanged(self, simple_data):
+        X, y, sensitive = simple_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        np.testing.assert_array_equal(result.y, y)
+
+    def test_lambda_zero_unchanged(self, simple_data):
+        """lambda_=0 should leave all points unchanged."""
+        X, y, sensitive = simple_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.0,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        np.testing.assert_array_almost_equal(result.X, X, decimal=8)
+
+    def test_repair_reduces_disparity(self, simple_data):
+        """After repair, group means should be closer."""
+        X, y, sensitive = simple_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=1.0,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        diff_before = abs(X[sensitive == 0].mean() - X[sensitive == 1].mean())
+        diff_after = abs(
+            result.X[sensitive == 0].mean() - result.X[sensitive == 1].mean()
+        )
+        assert diff_after < diff_before
+
+    def test_reproducible_with_random_state(self, simple_data):
+        """Same random_state should give same result."""
+        X, y, sensitive = simple_data
+        rw1 = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                                random_state=0)
+        rw2 = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                                random_state=0)
+        result1 = rw1.fit_transform(X, y, sensitive)
+        result2 = rw2.fit_transform(X, y, sensitive)
+        np.testing.assert_array_equal(result1.X, result2.X)
+
+    def test_extra_contains_ot_info(self, simple_data):
+        X, y, sensitive = simple_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        assert result.extra["method"] == "ot"
+        assert result.extra["repair_type"] == "random"
+
+    def test_custom_weights(self, simple_data):
+        X, y, sensitive = simple_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                               weights=(0.3, 0.7), random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        assert isinstance(result, PreProcessingResult)
+
+    def test_1d_ot(self, single_feature_data):
+        X, y, sensitive = single_feature_data
+        rw = WassersteinRepair(method="ot", repair_type="random", lambda_=0.5,
+                               random_state=42)
+        result = rw.fit_transform(X, y, sensitive)
+        assert result.X.shape == X.shape
 
 
 # ---------------------------------------------------------------------------
