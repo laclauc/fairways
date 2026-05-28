@@ -270,19 +270,38 @@ class WassersteinRepair(PreProcessor):
         elif self.method == "ot":
             from .wasserstein_repair_ot import _random_repair_ot
             X_input = X_repaired if X.ndim > 1 else X_repaired.reshape(-1, 1)
-            X0_rep, X1_rep = _random_repair_ot(
+
+            X0_rep, y0_rep, w0_rep, X1_rep, y1_rep, w1_rep = _random_repair_ot(
                 X_input[mask0],
                 X_input[mask1],
+                y0=y[mask0],
+                y1=y[mask1],
                 lambda_=self.lambda_,
                 pi0=self.weights[0],
                 pi1=self.weights[1],
                 random_state=self.random_state,
             )
-            X_repaired = X_input.copy().astype(float)
-            X_repaired[mask0] = X0_rep
-            X_repaired[mask1] = X1_rep
+
+            # Reassemble repaired groups
+            X_repaired = np.concatenate([X0_rep, X1_rep], axis=0)
+            y_repaired = np.concatenate([y0_rep, y1_rep], axis=0)
+            w_repaired = np.concatenate([w0_rep, w1_rep], axis=0)
+
             if X.ndim == 1:
                 X_repaired = X_repaired.ravel()
+
+            return PreProcessingResult(
+                X=X_repaired,
+                y=y_repaired,
+                weights=w_repaired,
+                extra={
+                    "repair_type": self.repair_type,
+                    "lambda_": self.lambda_,
+                    "method": self.method,
+                    "n_original": len(y),
+                    "n_repaired": len(y_repaired),
+                },
+            )
 
         return PreProcessingResult(
             X=X_repaired,
