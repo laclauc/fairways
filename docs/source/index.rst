@@ -39,6 +39,7 @@ Key features:
    api/audit
    api/metrics
    api/result
+   api/mitigation
 
 .. toctree::
    :maxdepth: 2

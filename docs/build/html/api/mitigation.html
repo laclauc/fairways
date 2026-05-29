@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mitigation &mdash; equiml 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="equiml — Quickstart" href="../notebooks/01_quickstart.html" />
+    <link rel="prev" title="result" href="result.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            equiml
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts.html">Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="audit.html">audit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="result.html">result</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">mitigation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#base-classes">Base classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.mitigation.base.FairnessMitigator"><code class="docutils literal notranslate"><span class="pre">FairnessMitigator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.mitigation.base.PreProcessor"><code class="docutils literal notranslate"><span class="pre">PreProcessor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.mitigation.base.PostProcessor"><code class="docutils literal notranslate"><span class="pre">PostProcessor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.mitigation.base.PreProcessingResult"><code class="docutils literal notranslate"><span class="pre">PreProcessingResult</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pre-processing">Pre-processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.mitigation.pre.reweighting.Reweighting"><code class="docutils literal notranslate"><span class="pre">Reweighting</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair"><code class="docutils literal notranslate"><span class="pre">WassersteinRepair</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01_quickstart.html">equiml — Quickstart</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">equiml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">mitigation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/mitigation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mitigation">
+<h1>mitigation<a class="headerlink" href="#mitigation" title="Link to this heading"></a></h1>
+<section id="base-classes">
+<h2>Base classes<a class="headerlink" href="#base-classes" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.mitigation.base.FairnessMitigator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.mitigation.base.</span></span><span class="sig-name descname"><span class="pre">FairnessMitigator</span></span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#FairnessMitigator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.FairnessMitigator" title="Link to this definition"></a></dt>
+<dd><p>Base class for all fairness mitigators.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.mitigation.base.FairnessMitigator.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.mitigation.base.FairnessMitigator.name" title="Link to this definition"></a></dt>
+<dd><p>Mitigator name — defaults to lowercase class name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.mitigation.base.</span></span><span class="sig-name descname"><span class="pre">PreProcessor</span></span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PreProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PreProcessor" title="Link to this definition"></a></dt>
+<dd><p>Base class for pre-processing fairness mitigators.</p>
+<p>Pre-processors modify training data before model fitting.
+They operate on features X, labels y, and sensitive attributes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessor.fit">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PreProcessor.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PreProcessor.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the mitigator on training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix of shape (n_samples, n_features).</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth labels of shape (n_samples,).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+<li><p><strong>**kwargs</strong> – Additional method-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitted mitigator (self).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.base.PreProcessor" title="equiml.mitigation.base.PreProcessor">PreProcessor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessor.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PreProcessor.fit_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PreProcessor.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit and transform in one step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix.</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.base.PreProcessingResult" title="equiml.mitigation.base.PreProcessingResult">PreProcessingResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessor.transform">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PreProcessor.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PreProcessor.transform" title="Link to this definition"></a></dt>
+<dd><p>Apply the mitigation to training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix of shape (n_samples, n_features).</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth labels of shape (n_samples,).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+<li><p><strong>**kwargs</strong> – Additional method-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Transformed data with X, y, weights and/or extra fields.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.base.PreProcessingResult" title="equiml.mitigation.base.PreProcessingResult">PreProcessingResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PostProcessor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.mitigation.base.</span></span><span class="sig-name descname"><span class="pre">PostProcessor</span></span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PostProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PostProcessor" title="Link to this definition"></a></dt>
+<dd><p>Base class for post-processing fairness mitigators.</p>
+<p>Post-processors adjust model predictions after fitting.
+They operate on predictions and sensitive attributes only —
+no access to the original features X is required.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PostProcessor.fit">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PostProcessor.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PostProcessor.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the mitigator on predictions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Model predictions (labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+<li><p><strong>**kwargs</strong> – Additional method-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitted mitigator (self).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.base.PostProcessor" title="equiml.mitigation.base.PostProcessor">PostProcessor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PostProcessor.transform">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PostProcessor.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PostProcessor.transform" title="Link to this definition"></a></dt>
+<dd><p>Adjust predictions to reduce bias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_pred</strong> (<em>np.ndarray</em>) – Model predictions (labels or probabilities).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+<li><p><strong>**kwargs</strong> – Additional method-specific parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Adjusted predictions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessingResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.mitigation.base.</span></span><span class="sig-name descname"><span class="pre">PreProcessingResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/base.html#PreProcessingResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.base.PreProcessingResult" title="Link to this definition"></a></dt>
+<dd><p>Result of a pre-processing mitigation step.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessingResult.X">
+<span class="sig-name descname"><span class="pre">X</span></span><a class="headerlink" href="#equiml.mitigation.base.PreProcessingResult.X" title="Link to this definition"></a></dt>
+<dd><p>Transformed feature matrix. None if unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessingResult.y">
+<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#equiml.mitigation.base.PreProcessingResult.y" title="Link to this definition"></a></dt>
+<dd><p>Transformed labels. None if unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessingResult.weights">
+<span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#equiml.mitigation.base.PreProcessingResult.weights" title="Link to this definition"></a></dt>
+<dd><p>Sample weights. None if not applicable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="equiml.mitigation.base.PreProcessingResult.extra">
+<span class="sig-name descname"><span class="pre">extra</span></span><a class="headerlink" href="#equiml.mitigation.base.PreProcessingResult.extra" title="Link to this definition"></a></dt>
+<dd><p>Any additional method-specific information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="pre-processing">
+<h2>Pre-processing<a class="headerlink" href="#pre-processing" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.reweighting.Reweighting">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.mitigation.pre.reweighting.</span></span><span class="sig-name descname"><span class="pre">Reweighting</span></span><a class="reference internal" href="../_modules/equiml/mitigation/pre/reweighting.html#Reweighting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.pre.reweighting.Reweighting" title="Link to this definition"></a></dt>
+<dd><p>Reweighting for fairness-aware classification.</p>
+<p>Assigns sample weights to training examples so that each
+(group, label) combination is represented according to the
+expected distribution under independence between the sensitive
+attribute and the label.</p>
+<p>The weight for a sample with sensitive attribute S=s and label Y=y is:</p>
+<div class="math notranslate nohighlight">
+\[W(s, y) = \frac{P(S=s) \cdot P(Y=y)}{P(S=s, Y=y)}\]</div>
+<p>Under a fair model, S and Y would be independent, so the joint
+probability would equal the product of marginals. The weights
+correct for the observed dependence.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="rw1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>RW1<span class="fn-bracket">]</span></span>
+<p>Kamiran, F., &amp; Calders, T. (2012). Data preprocessing
+techniques for classification without discrimination.
+Knowledge and Information Systems, 33(1), 1-33.
+<a class="reference external" href="https://doi.org/10.1007/s10115-011-0463-8">https://doi.org/10.1007/s10115-011-0463-8</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.reweighting.Reweighting.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/pre/reweighting.html#Reweighting.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.pre.reweighting.Reweighting.fit" title="Link to this definition"></a></dt>
+<dd><p>Compute sample weights from training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix of shape (n_samples, n_features).
+Not used directly — included for API consistency.</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth binary labels of shape (n_samples,).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitted mitigator (self).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.pre.reweighting.Reweighting" title="equiml.mitigation.pre.reweighting.Reweighting">Reweighting</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.reweighting.Reweighting.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.mitigation.pre.reweighting.Reweighting.name" title="Link to this definition"></a></dt>
+<dd><p>Mitigator name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.reweighting.Reweighting.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/pre/reweighting.html#Reweighting.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.pre.reweighting.Reweighting.transform" title="Link to this definition"></a></dt>
+<dd><p>Apply sample weights to training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix of shape (n_samples, n_features).</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth labels of shape (n_samples,).</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Same X and y with computed sample weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.base.PreProcessingResult" title="equiml.mitigation.base.PreProcessingResult">PreProcessingResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.wasserstein_repair.WassersteinRepair">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">equiml.mitigation.pre.wasserstein_repair.</span></span><span class="sig-name descname"><span class="pre">WassersteinRepair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repair_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometric'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'quantile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/pre/wasserstein_repair.html#WassersteinRepair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair" title="Link to this definition"></a></dt>
+<dd><p>Fair data repair using optimal transport theory.</p>
+<p>Transforms numerical features so that their conditional distributions
+given the sensitive attribute are mapped towards a common barycenter
+distribution, reducing disparate impact while preserving rank ordering.</p>
+<p>Two methods are available:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">method='quantile'</span></code>: Operates feature-by-feature using empirical
+quantile functions. No additional dependencies required. Corresponds
+to the 1D repair of <a class="reference internal" href="#ffm15" id="id1"><span>[FFM15]</span></a> and the geometric repair of <a class="reference internal" href="#ggl19" id="id2"><span>[GGL19]</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method='ot'</span></code>: Uses optimal transport to repair all features jointly
+in the multidimensional case. Requires the <code class="docutils literal notranslate"><span class="pre">POT</span></code> package
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">equiml[ot]</span></code>). Corresponds to <a class="reference internal" href="#ggl19" id="id3"><span>[GGL19]</span></a>.</p></li>
+</ul>
+<p>Three repair types are available via <code class="docutils literal notranslate"><span class="pre">repair_type</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'total'</span></code>: Full repair towards the Wasserstein barycenter.
+Guarantees statistical parity but may reduce accuracy (<code class="docutils literal notranslate"><span class="pre">lambda_=1</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'geometric'</span></code>: Partial repair along the Wasserstein geodesic.
+Trade-off between fairness and accuracy controlled by <code class="docutils literal notranslate"><span class="pre">lambda_</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'random'</span></code>: Random repair as in <a class="reference internal" href="#ggl19" id="id4"><span>[GGL19]</span></a>. Better control of
+total variation distance. Only available with <code class="docutils literal notranslate"><span class="pre">method='ot'</span></code>.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repair_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default='geometric'</em>) – Type of repair: ‘total’, ‘geometric’, or ‘random’.</p></li>
+<li><p><strong>lambda</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Repair amount in [0, 1]. 0 = no repair, 1 = full repair.
+Only used for ‘geometric’ and ‘random’ repair types.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default='quantile'</em>) – Repair method: ‘quantile’ (numpy only) or ‘ot’ (requires POT).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="ffm15" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">FFM15</a><span class="fn-bracket">]</span></span>
+<p>Feldman, M., Friedler, S.A., Moeller, J., Scheidegger, C.,
+&amp; Venkatasubramanian, S. (2015). Certifying and removing
+disparate impact. In Proceedings of KDD (pp. 259-268).
+<a class="reference external" href="https://doi.org/10.1145/2783258.2783311">https://doi.org/10.1145/2783258.2783311</a></p>
+</div>
+<div class="citation" id="ggl19" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>GGL19<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>,<a role="doc-backlink" href="#id4">3</a>)</span>
+<p>Gordaliza, P., Del Barrio, E., Gamboa, F., &amp; Loubes, J.M.
+(2019). Obtaining fairness using optimal transport theory.
+In Proceedings of ICML (pp. 2357-2365).
+<a class="reference external" href="https://arxiv.org/abs/1806.03195">https://arxiv.org/abs/1806.03195</a></p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/pre/wasserstein_repair.html#WassersteinRepair.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the repair on training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix of shape (n_samples, n_features).
+Must contain only numerical features.</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth labels. Not used — included for API consistency.</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitted mitigator (self).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair" title="equiml.mitigation.pre.wasserstein_repair.WassersteinRepair">WassersteinRepair</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.name" title="Link to this definition"></a></dt>
+<dd><p>Mitigator name — defaults to lowercase class name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/equiml/mitigation/pre/wasserstein_repair.html#WassersteinRepair.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.transform" title="Link to this definition"></a></dt>
+<dd><p>Apply the repair to the feature matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Feature matrix of shape (n_samples, n_features).</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Ground truth labels.</p></li>
+<li><p><strong>sensitive</strong> (<em>np.ndarray</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>]</em>) – Sensitive attribute(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Repaired feature matrix with same y and no weights.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#equiml.mitigation.base.PreProcessingResult" title="equiml.mitigation.base.PreProcessingResult">PreProcessingResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="result.html" class="btn btn-neutral float-left" title="result" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../notebooks/01_quickstart.html" class="btn btn-neutral float-right" title="equiml — Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Charlotte Laclau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api/audit.html">audit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/metrics.html">metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/result.html">result</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/mitigation.html">mitigation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
@@ -98,7 +99,11 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -168,12 +173,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.EqualizedOdds">EqualizedOdds (class in equiml.metrics)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.EqualOpportunity">EqualOpportunity (class in equiml.metrics)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.base.MetricResult.extra">extra (equiml.metrics.base.MetricResult attribute)</a>
+
+      <ul>
+        <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessingResult.extra">(equiml.mitigation.base.PreProcessingResult attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -181,6 +190,22 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.FairnessMetric">FairnessMetric (class in equiml.metrics)</a>
+</li>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.FairnessMitigator">FairnessMitigator (class in equiml.mitigation.base)</a>
+</li>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PostProcessor.fit">fit() (equiml.mitigation.base.PostProcessor method)</a>
+
+      <ul>
+        <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessor.fit">(equiml.mitigation.base.PreProcessor method)</a>
+</li>
+        <li><a href="api/mitigation.html#equiml.mitigation.pre.reweighting.Reweighting.fit">(equiml.mitigation.pre.reweighting.Reweighting method)</a>
+</li>
+        <li><a href="api/mitigation.html#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.fit">(equiml.mitigation.pre.wasserstein_repair.WassersteinRepair method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessor.fit_transform">fit_transform() (equiml.mitigation.base.PreProcessor method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -231,6 +256,12 @@
 </li>
         <li><a href="api/metrics.html#equiml.metrics.PredictiveParity.name">(equiml.metrics.PredictiveParity property)</a>
 </li>
+        <li><a href="api/mitigation.html#equiml.mitigation.base.FairnessMitigator.name">(equiml.mitigation.base.FairnessMitigator property)</a>
+</li>
+        <li><a href="api/mitigation.html#equiml.mitigation.pre.reweighting.Reweighting.name">(equiml.mitigation.pre.reweighting.Reweighting property)</a>
+</li>
+        <li><a href="api/mitigation.html#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.name">(equiml.mitigation.pre.wasserstein_repair.WassersteinRepair property)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -240,11 +271,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.base.MetricResult.p_value">p_value (equiml.metrics.base.MetricResult attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PostProcessor">PostProcessor (class in equiml.mitigation.base)</a>
+</li>
       <li><a href="api/result.html#equiml.result.AuditResult.pred_type">pred_type (equiml.result.AuditResult attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.PredictiveParity">PredictiveParity (class in equiml.metrics)</a>
+</li>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessingResult">PreProcessingResult (class in equiml.mitigation.base)</a>
+</li>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessor">PreProcessor (class in equiml.mitigation.base)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -271,12 +308,60 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.pre.reweighting.Reweighting">Reweighting (class in equiml.mitigation.pre.reweighting)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PostProcessor.transform">transform() (equiml.mitigation.base.PostProcessor method)</a>
+
+      <ul>
+        <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessor.transform">(equiml.mitigation.base.PreProcessor method)</a>
+</li>
+        <li><a href="api/mitigation.html#equiml.mitigation.pre.reweighting.Reweighting.transform">(equiml.mitigation.pre.reweighting.Reweighting method)</a>
+</li>
+        <li><a href="api/mitigation.html#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair.transform">(equiml.mitigation.pre.wasserstein_repair.WassersteinRepair method)</a>
+</li>
+      </ul></li>
+  </ul></td>
 </tr></table>
 
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/metrics.html#equiml.metrics.base.MetricResult.value">value (equiml.metrics.base.MetricResult attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.pre.wasserstein_repair.WassersteinRepair">WassersteinRepair (class in equiml.mitigation.pre.wasserstein_repair)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessingResult.weights">weights (equiml.mitigation.base.PreProcessingResult attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessingResult.X">X (equiml.mitigation.base.PreProcessingResult attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mitigation.html#equiml.mitigation.base.PreProcessingResult.y">y (equiml.mitigation.base.PreProcessingResult attribute)</a>
 </li>
   </ul></td>
 </tr></table>

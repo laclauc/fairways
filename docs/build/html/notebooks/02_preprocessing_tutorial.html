@@ -1,0 +1,559 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>equiml — Pre-processing Fairness Tutorial &mdash; equiml 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            equiml
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts.html">Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/audit.html">audit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/result.html">result</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/mitigation.html">mitigation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01_quickstart.html">equiml — Quickstart</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">equiml</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">equiml — Pre-processing Fairness Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/02_preprocessing_tutorial.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="equiml-—-Pre-processing-Fairness-Tutorial">
+<h1>equiml — Pre-processing Fairness Tutorial<a class="headerlink" href="#equiml-—-Pre-processing-Fairness-Tutorial" title="Link to this heading"></a></h1>
+<p>This notebook demonstrates the pre-processing fairness methods available in <code class="docutils literal notranslate"><span class="pre">equiml</span></code> on two datasets:</p>
+<ol class="arabic simple">
+<li><p><strong>Adult Income</strong> (UCI) — a classic fairness benchmark</p></li>
+<li><p><strong>ACS / folktables</strong> — a more recent and realistic benchmark (Ding et al. 2021)</p></li>
+</ol>
+<p>For each dataset we will:</p>
+<ul class="simple">
+<li><p>Train a baseline model and audit its fairness</p></li>
+<li><p>Apply each pre-processing method</p></li>
+<li><p>Retrain and re-audit</p></li>
+<li><p>Compare fairness / accuracy tradeoffs</p></li>
+</ul>
+<p><strong>Pre-processing methods covered:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Reweighting</span></code> (Kamiran &amp; Calders, 2012)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WassersteinRepair</span></code> quantile (Feldman et al., 2015)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WassersteinRepair</span></code> OT — Random Repair (Gordaliza et al., 2019)</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">equiml</span><span class="w"> </span><span class="kn">import</span> <span class="n">audit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">equiml.mitigation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reweighting</span><span class="p">,</span> <span class="n">WassersteinRepair</span>
+</pre></div>
+</div>
+</div>
+<section id="Helper-functions">
+<h2>Helper functions<a class="headerlink" href="#Helper-functions" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">train_and_audit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">sensitive_test</span><span class="p">,</span>
+                    <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Baseline&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Train a logistic regression and audit its fairness.&quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">y_proba</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="n">result_labels</span> <span class="o">=</span> <span class="n">audit</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sensitive_test</span><span class="p">,</span>
+                          <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;demographic_parity&quot;</span><span class="p">,</span> <span class="s2">&quot;equalized_odds&quot;</span><span class="p">,</span>
+                                   <span class="s2">&quot;equal_opportunity&quot;</span><span class="p">])</span>
+    <span class="n">result_proba</span> <span class="o">=</span> <span class="n">audit</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_proba</span><span class="p">,</span> <span class="n">sensitive_test</span><span class="p">,</span>
+                         <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auc_parity&quot;</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Accuracy              : </span><span class="si">{</span><span class="n">acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Demographic Parity    : </span><span class="si">{</span><span class="n">result_labels</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;demographic_parity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Equal Opportunity     : </span><span class="si">{</span><span class="n">result_labels</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;equal_opportunity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Equalized Odds        : </span><span class="si">{</span><span class="n">result_labels</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;equalized_odds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  AUC Parity            : </span><span class="si">{</span><span class="n">result_proba</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;auc_parity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">acc</span><span class="p">,</span>
+        <span class="s2">&quot;demographic_parity&quot;</span><span class="p">:</span> <span class="n">result_labels</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;demographic_parity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="s2">&quot;equal_opportunity&quot;</span><span class="p">:</span> <span class="n">result_labels</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;equal_opportunity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="s2">&quot;equalized_odds&quot;</span><span class="p">:</span> <span class="n">result_labels</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;equalized_odds&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="s2">&quot;auc_parity&quot;</span><span class="p">:</span> <span class="n">result_proba</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;auc_parity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="Part-1-—-Adult-Income-Dataset">
+<h1>Part 1 — Adult Income Dataset<a class="headerlink" href="#Part-1-—-Adult-Income-Dataset" title="Link to this heading"></a></h1>
+<section id="1.1-Loading-the-data">
+<h2>1.1 Loading the data<a class="headerlink" href="#1.1-Loading-the-data" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;adult_norm.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># Sensitive attribute and label</span>
+<span class="n">sensitive_col</span> <span class="o">=</span> <span class="s2">&quot;gender:is_Male&quot;</span>
+<span class="n">label_col</span> <span class="o">=</span> <span class="s2">&quot;income:is_&gt;50K&quot;</span>
+
+<span class="c1"># Numerical features — repair will be applied only to these</span>
+<span class="n">numerical_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;educational-num&quot;</span><span class="p">,</span> <span class="s2">&quot;capital-gain&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;capital-loss&quot;</span><span class="p">,</span> <span class="s2">&quot;hours-per-week&quot;</span><span class="p">]</span>
+<span class="n">numerical_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">sensitive_col</span><span class="p">,</span> <span class="n">label_col</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+                   <span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">numerical_cols</span><span class="p">]</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">sensitive_col</span><span class="p">,</span> <span class="n">label_col</span><span class="p">])</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">label_col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">sensitive</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">sensitive_col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset: </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples, </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> features&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive rate overall   : </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive rate (male)    : </span><span class="si">{</span><span class="n">y</span><span class="p">[</span><span class="n">sensitive</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive rate (female)  : </span><span class="si">{</span><span class="n">y</span><span class="p">[</span><span class="n">sensitive</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.2-Train/test-split">
+<h2>1.2 Train/test split<a class="headerlink" href="#1.2-Train/test-split" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">s_train</span><span class="p">,</span> <span class="n">s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sensitive</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span>
+<span class="p">)</span>
+
+<span class="n">results_adult</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.3-Baseline">
+<h2>1.3 Baseline<a class="headerlink" href="#1.3-Baseline" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">s_test</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Baseline (no mitigation)&quot;</span><span class="p">)</span>
+<span class="n">results_adult</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.4-Reweighting-(Kamiran-&amp;-Calders-2012)">
+<h2>1.4 Reweighting (Kamiran &amp; Calders 2012)<a class="headerlink" href="#1.4-Reweighting-(Kamiran-&-Calders-2012)" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rw</span> <span class="o">=</span> <span class="n">Reweighting</span><span class="p">()</span>
+<span class="n">result_rw</span> <span class="o">=</span> <span class="n">rw</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">s_train</span><span class="p">)</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span><span class="n">result_rw</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">result_rw</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">s_test</span><span class="p">,</span>
+                      <span class="n">sample_weight</span><span class="o">=</span><span class="n">result_rw</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reweighting&quot;</span><span class="p">)</span>
+<span class="n">results_adult</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.5-WassersteinRepair-—-quantile-(Feldman-et-al.-2015)">
+<h2>1.5 WassersteinRepair — quantile (Feldman et al. 2015)<a class="headerlink" href="#1.5-WassersteinRepair-—-quantile-(Feldman-et-al.-2015)" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">lambda_</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]:</span>
+    <span class="c1"># Repair numerical features only</span>
+    <span class="n">repair</span> <span class="o">=</span> <span class="n">WassersteinRepair</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;quantile&quot;</span><span class="p">,</span>
+        <span class="n">repair_type</span><span class="o">=</span><span class="s2">&quot;geometric&quot;</span><span class="p">,</span>
+        <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_</span>
+    <span class="p">)</span>
+    <span class="n">result_rep</span> <span class="o">=</span> <span class="n">repair</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+        <span class="n">X_train</span><span class="p">[:,</span> <span class="n">numerical_idx</span><span class="p">],</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">s_train</span>
+    <span class="p">)</span>
+
+    <span class="n">X_train_rep</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">X_train_rep</span><span class="p">[:,</span> <span class="n">numerical_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_rep</span><span class="o">.</span><span class="n">X</span>
+
+    <span class="c1"># Apply same transform to test set</span>
+    <span class="n">result_test</span> <span class="o">=</span> <span class="n">repair</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+        <span class="n">X_test</span><span class="p">[:,</span> <span class="n">numerical_idx</span><span class="p">],</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">s_test</span>
+    <span class="p">)</span>
+    <span class="n">X_test_rep</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">X_test_rep</span><span class="p">[:,</span> <span class="n">numerical_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_test</span><span class="o">.</span><span class="n">X</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span>
+        <span class="n">X_train_rep</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_rep</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">s_test</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;WassersteinRepair quantile (λ=</span><span class="si">{</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">results_adult</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.6-WassersteinRepair-—-OT-Random-Repair-(Gordaliza-et-al.-2019)">
+<h2>1.6 WassersteinRepair — OT Random Repair (Gordaliza et al. 2019)<a class="headerlink" href="#1.6-WassersteinRepair-—-OT-Random-Repair-(Gordaliza-et-al.-2019)" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">lambda_</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]:</span>
+    <span class="n">repair_ot</span> <span class="o">=</span> <span class="n">WassersteinRepair</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ot&quot;</span><span class="p">,</span>
+        <span class="n">repair_type</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+    <span class="n">result_ot</span> <span class="o">=</span> <span class="n">repair_ot</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+        <span class="n">X_train</span><span class="p">[:,</span> <span class="n">numerical_idx</span><span class="p">],</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">s_train</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Reconstruct full feature matrix</span>
+    <span class="c1"># Note: OT repair may change dataset size</span>
+    <span class="n">n_rep</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_ot</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">X_train_ot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_rep</span><span class="p">,</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># Rebuild sensitive array for repaired dataset</span>
+    <span class="n">n0</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="c1"># Approximate: keep track of group sizes</span>
+    <span class="c1"># (stored in extra by the mitigator)</span>
+    <span class="n">n0_rep</span> <span class="o">=</span> <span class="n">result_ot</span><span class="o">.</span><span class="n">extra</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_repaired&quot;</span><span class="p">,</span> <span class="n">n_rep</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">s_train_ot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n0_rep</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_rep</span> <span class="o">-</span> <span class="n">n0_rep</span><span class="p">))</span>
+
+    <span class="c1"># Fill numerical features with repaired values</span>
+    <span class="n">X_train_ot</span><span class="p">[:,</span> <span class="n">numerical_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_ot</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="n">result_ot</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">result_ot</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span>
+        <span class="n">X_train_ot</span><span class="p">,</span> <span class="n">result_ot</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">s_test</span><span class="p">,</span>
+        <span class="n">sample_weight</span><span class="o">=</span><span class="n">result_ot</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;WassersteinRepair OT (λ=</span><span class="si">{</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">results_adult</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.7-Comparison">
+<h2>1.7 Comparison<a class="headerlink" href="#1.7-Comparison" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results_adult</span><span class="p">)</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">df_results</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">df_results</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Adult Income — Fairness / Accuracy comparison&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_results</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="Part-2-—-ACS-/-folktables-(Ding-et-al.-2021)">
+<h1>Part 2 — ACS / folktables (Ding et al. 2021)<a class="headerlink" href="#Part-2-—-ACS-/-folktables-(Ding-et-al.-2021)" title="Link to this heading"></a></h1>
+<p>folktables provides more recent data from the American Community Survey (ACS). We use the <code class="docutils literal notranslate"><span class="pre">ACSIncome</span></code> task, which predicts whether an individual earns more than $50,000/year.</p>
+<p><strong>Reference:</strong> Ding, F., Hardt, M., Miller, J., &amp; Schmidt, L. (2021). Retiring Adult: New Datasets for Fair Machine Learning. NeurIPS 2021. <a class="reference external" href="https://arxiv.org/abs/2108.04884">https://arxiv.org/abs/2108.04884</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">folktables</span><span class="w"> </span><span class="kn">import</span> <span class="n">ACSDataSource</span><span class="p">,</span> <span class="n">ACSIncome</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+        <span class="s2">&quot;folktables is required for this section. &quot;</span>
+        <span class="s2">&quot;Install it with: pip install folktables&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="2.1-Loading-ACS-data">
+<h2>2.1 Loading ACS data<a class="headerlink" href="#2.1-Loading-ACS-data" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download 2018 data for California</span>
+<span class="n">data_source</span> <span class="o">=</span> <span class="n">ACSDataSource</span><span class="p">(</span><span class="n">survey_year</span><span class="o">=</span><span class="s1">&#39;2018&#39;</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="s1">&#39;1-Year&#39;</span><span class="p">,</span> <span class="n">survey</span><span class="o">=</span><span class="s1">&#39;person&#39;</span><span class="p">)</span>
+<span class="n">acs_data</span> <span class="o">=</span> <span class="n">data_source</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">states</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">],</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">X_acs</span><span class="p">,</span> <span class="n">y_acs</span><span class="p">,</span> <span class="n">group_acs</span> <span class="o">=</span> <span class="n">ACSIncome</span><span class="o">.</span><span class="n">df_to_numpy</span><span class="p">(</span><span class="n">acs_data</span><span class="p">)</span>
+
+<span class="c1"># Sensitive attribute: SEX (1=male, 2=female) → binarize</span>
+<span class="n">sensitive_acs</span> <span class="o">=</span> <span class="p">(</span><span class="n">group_acs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># 1=male, 0=female</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ACS dataset: </span><span class="si">{</span><span class="n">X_acs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples, </span><span class="si">{</span><span class="n">X_acs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> features&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive rate overall  : </span><span class="si">{</span><span class="n">y_acs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive rate (male)   : </span><span class="si">{</span><span class="n">y_acs</span><span class="p">[</span><span class="n">sensitive_acs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Positive rate (female) : </span><span class="si">{</span><span class="n">y_acs</span><span class="p">[</span><span class="n">sensitive_acs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.2-Train/test-split-and-subsampling">
+<h2>2.2 Train/test split and subsampling<a class="headerlink" href="#2.2-Train/test-split-and-subsampling" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Normalize features</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_acs_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_acs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+
+<span class="n">X_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">s_tr</span><span class="p">,</span> <span class="n">s_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X_acs_scaled</span><span class="p">,</span> <span class="n">y_acs</span><span class="p">,</span> <span class="n">sensitive_acs</span><span class="p">,</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y_acs</span>
+<span class="p">)</span>
+
+<span class="c1"># All features are numerical for ACS</span>
+<span class="n">numerical_idx_acs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">X_acs_scaled</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">results_acs</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># --- Subsampling for repair methods ---</span>
+<span class="c1"># OT repair is O(n²) in memory — not feasible on the full dataset.</span>
+<span class="c1"># We subsample the training set for repair methods only.</span>
+<span class="c1"># The model is still evaluated on the full test set.</span>
+<span class="n">REPAIR_SAMPLE_SIZE</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">idx_sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_tr</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">REPAIR_SAMPLE_SIZE</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X_tr_small</span> <span class="o">=</span> <span class="n">X_tr</span><span class="p">[</span><span class="n">idx_sample</span><span class="p">]</span>
+<span class="n">y_tr_small</span> <span class="o">=</span> <span class="n">y_tr</span><span class="p">[</span><span class="n">idx_sample</span><span class="p">]</span>
+<span class="n">s_tr_small</span> <span class="o">=</span> <span class="n">s_tr</span><span class="p">[</span><span class="n">idx_sample</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Full train size    : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_tr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Repair sample size : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_tr_small</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test size          : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_te</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.3-Baseline">
+<h2>2.3 Baseline<a class="headerlink" href="#2.3-Baseline" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">s_te</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Baseline (no mitigation)&quot;</span><span class="p">)</span>
+<span class="n">results_acs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.4-Reweighting">
+<h2>2.4 Reweighting<a class="headerlink" href="#2.4-Reweighting" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rw_acs</span> <span class="o">=</span> <span class="n">Reweighting</span><span class="p">()</span>
+<span class="n">result_rw_acs</span> <span class="o">=</span> <span class="n">rw_acs</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_tr_small</span><span class="p">,</span> <span class="n">y_tr_small</span><span class="p">,</span> <span class="n">s_tr_small</span><span class="p">)</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span><span class="n">result_rw_acs</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">result_rw_acs</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                      <span class="n">X_te</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">s_te</span><span class="p">,</span>
+                      <span class="n">sample_weight</span><span class="o">=</span><span class="n">result_rw_acs</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span>
+                      <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Reweighting&quot;</span><span class="p">)</span>
+<span class="n">results_acs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.5-WassersteinRepair-—-quantile">
+<h2>2.5 WassersteinRepair — quantile<a class="headerlink" href="#2.5-WassersteinRepair-—-quantile" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">lambda_</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]:</span>
+    <span class="n">repair_acs</span> <span class="o">=</span> <span class="n">WassersteinRepair</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;quantile&quot;</span><span class="p">,</span>
+        <span class="n">repair_type</span><span class="o">=</span><span class="s2">&quot;geometric&quot;</span><span class="p">,</span>
+        <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_</span>
+    <span class="p">)</span>
+    <span class="n">result_rep_acs</span> <span class="o">=</span> <span class="n">repair_acs</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_tr_small</span><span class="p">,</span> <span class="n">y_tr_small</span><span class="p">,</span> <span class="n">s_tr_small</span><span class="p">)</span>
+    <span class="n">result_test_acs</span> <span class="o">=</span> <span class="n">repair_acs</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_te</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">s_te</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span>
+        <span class="n">result_rep_acs</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y_tr_small</span><span class="p">,</span>
+        <span class="n">result_test_acs</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">s_te</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;WassersteinRepair quantile (λ=</span><span class="si">{</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">results_acs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.6-WassersteinRepair-—-OT-Random-Repair">
+<h2>2.6 WassersteinRepair — OT Random Repair<a class="headerlink" href="#2.6-WassersteinRepair-—-OT-Random-Repair" title="Link to this heading"></a></h2>
+<p>⚠️ <strong>Scalability note</strong>: The OT repair solves a linear program of size <span class="math notranslate nohighlight">\(n_0 \times n_1\)</span>, which is <span class="math notranslate nohighlight">\(O(n^2)\)</span> in memory. On large datasets like ACS, we apply it on a subsample of the training set. As a consequence, the repaired model may not generalize as well as on the full dataset. This is a known limitation of the exact OT approach. For large-scale applications, approximate OT methods (e.g. Sinkhorn regularization) would be needed.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">lambda_</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]:</span>
+    <span class="n">repair_ot_acs</span> <span class="o">=</span> <span class="n">WassersteinRepair</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ot&quot;</span><span class="p">,</span>
+        <span class="n">repair_type</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+    <span class="p">)</span>
+    <span class="n">result_ot_acs</span> <span class="o">=</span> <span class="n">repair_ot_acs</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_tr_small</span><span class="p">,</span> <span class="n">y_tr_small</span><span class="p">,</span> <span class="n">s_tr_small</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">train_and_audit</span><span class="p">(</span>
+        <span class="n">result_ot_acs</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">result_ot_acs</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+        <span class="n">X_te</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">s_te</span><span class="p">,</span>
+        <span class="n">sample_weight</span><span class="o">=</span><span class="n">result_ot_acs</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;WassersteinRepair OT (λ=</span><span class="si">{</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">results_acs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.7-Comparison">
+<h2>2.7 Comparison<a class="headerlink" href="#2.7-Comparison" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_results_acs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results_acs</span><span class="p">)</span>
+<span class="n">df_results_acs</span> <span class="o">=</span> <span class="n">df_results_acs</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+<span class="n">df_results_acs</span> <span class="o">=</span> <span class="n">df_results_acs</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ACS / folktables — Fairness / Accuracy comparison&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_results_acs</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Charlotte Laclau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
