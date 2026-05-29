@@ -65,6 +65,10 @@ class TestDetectPredType:
 
     # --- Unknown dtype → error ---
 
+    def test_bool_array_is_labels(self):
+        y = np.array([True, False, True, False])
+        assert detect_pred_type(y) == "labels"
+
     def test_unknown_dtype_raises(self):
         y = np.array(["a", "b", "c"])
         with pytest.raises(ValueError):

@@ -30,6 +30,10 @@ def detect_pred_type(y_pred: np.ndarray, pred_type: str | None = None) -> str:
             )
         return pred_type
 
+    # Boolean dtype → labels
+    if np.issubdtype(y_pred.dtype, np.bool_):
+        return "labels"
+
     # Integer dtype → labels
     if np.issubdtype(y_pred.dtype, np.integer):
         return "labels"

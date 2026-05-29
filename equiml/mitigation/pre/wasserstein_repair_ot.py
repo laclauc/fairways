@@ -6,11 +6,13 @@ def _random_repair_ot(
     X1: np.ndarray,
     y0: np.ndarray,
     y1: np.ndarray,
+    s0_val,
+    s1_val,
     lambda_: float,
     pi0: float,
     pi1: float,
     random_state: int | None = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple:
     """
     Random Repair via optimal transport (Gordaliza et al. 2019).
 
@@ -25,13 +27,17 @@ def _random_repair_ot(
     Parameters
     ----------
     X0 : np.ndarray of shape (n0, d)
-        Feature matrix for group S=0.
+        Feature matrix for group S=s0_val.
     X1 : np.ndarray of shape (n1, d)
-        Feature matrix for group S=1.
+        Feature matrix for group S=s1_val.
     y0 : np.ndarray of shape (n0,)
-        Labels for group S=0.
+        Labels for group S=s0_val.
     y1 : np.ndarray of shape (n1,)
-        Labels for group S=1.
+        Labels for group S=s1_val.
+    s0_val : scalar
+        Sensitive attribute value for group 0.
+    s1_val : scalar
+        Sensitive attribute value for group 1.
     lambda_ : float
         Repair probability in [0, 1].
     pi0 : float
@@ -43,9 +49,10 @@ def _random_repair_ot(
 
     Returns
     -------
-    tuple of 6 arrays:
-        X0_repaired, y0_repaired, w0_repaired,
-        X1_repaired, y1_repaired, w1_repaired
+    tuple of 9 arrays:
+        X0_rep, y0_rep, w0_rep, s0_rep,
+        X1_rep, y1_rep, w1_rep, s1_rep,
+        info (dict with n0_repaired, n1_repaired)
 
     References
     ----------
@@ -64,7 +71,6 @@ def _random_repair_ot(
 
     rng = np.random.default_rng(random_state)
     n0, n1 = len(X0), len(X1)
-    d = X0.shape[1]
 
     # Cost matrix: squared Euclidean distances
     C = np.sum((X0[:, None, :] - X1[None, :, :]) ** 2, axis=-1)
@@ -77,48 +83,56 @@ def _random_repair_ot(
     gamma = ot.emd(a, b, C)
 
     # --- Repair group 0 ---
-    X0_new, y0_new, w0_new = [], [], []
+    X0_new, y0_new, w0_new, s0_new = [], [], [], []
     bernoulli_0 = rng.binomial(1, lambda_, size=n0)
 
     for i in range(n0):
         if bernoulli_0[i] == 0:
-            # Keep original point
             X0_new.append(X0[i])
             y0_new.append(y0[i])
             w0_new.append(1.0)
+            s0_new.append(s0_val)
         else:
-            # Split into barycentric targets for all j with gamma_ij > 0
             for j in range(n1):
                 if gamma[i, j] > 0:
                     x_tilde = pi0 * X0[i] + pi1 * X1[j]
                     X0_new.append(x_tilde)
                     y0_new.append(y0[i])
                     w0_new.append(gamma[i, j] * n0)
+                    s0_new.append(s0_val)
 
     # --- Repair group 1 ---
-    X1_new, y1_new, w1_new = [], [], []
+    X1_new, y1_new, w1_new, s1_new = [], [], [], []
     bernoulli_1 = rng.binomial(1, lambda_, size=n1)
 
     for j in range(n1):
         if bernoulli_1[j] == 0:
-            # Keep original point
             X1_new.append(X1[j])
             y1_new.append(y1[j])
             w1_new.append(1.0)
+            s1_new.append(s1_val)
         else:
-            # Split into barycentric targets for all i with gamma_ij > 0
             for i in range(n0):
                 if gamma[i, j] > 0:
                     x_tilde = pi0 * X0[i] + pi1 * X1[j]
                     X1_new.append(x_tilde)
                     y1_new.append(y1[j])
                     w1_new.append(gamma[i, j] * n1)
+                    s1_new.append(s1_val)
+
+    info = {
+        "n0_repaired": len(X0_new),
+        "n1_repaired": len(X1_new),
+    }
 
     return (
         np.array(X0_new),
         np.array(y0_new),
         np.array(w0_new),
+        np.array(s0_new),
         np.array(X1_new),
         np.array(y1_new),
         np.array(w1_new),
+        np.array(s1_new),
+        info,
     )
